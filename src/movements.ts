@@ -84,3 +84,35 @@ export interface Position {
   y: number;
   direction: DirectionName;
 }
+
+export const attemptMoveForward = (previousPosition: Position) => {
+  const { x, y, direction } = previousPosition;
+  switch (direction) {
+    case 'North':
+      return {
+        x,
+        y: y + 1,
+        direction,
+      };
+    case 'East':
+      return {
+        x: x + 1,
+        y,
+        direction,
+      };
+    case 'South':
+      return {
+        x,
+        y: y - 1,
+        direction,
+      };
+    case 'West':
+      return {
+        x: x - 1,
+        y,
+        direction,
+      };
+    default:
+      throw new Error(`Unknown direction ${direction}`);
+  }
+}
