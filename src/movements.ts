@@ -1,7 +1,7 @@
 export type DirectionName = 'North' | 'East' | 'South' | 'West';
 
 interface Direction {
-  name: DirectionName;
+  name: string;
   reference: string;
   order: number;
 }
@@ -29,7 +29,7 @@ const directions: Direction[] = [
   },
 ];
 
-const getDirectionByName = (direction: DirectionName) => {
+const getDirectionByName = (direction: string) => {
   const dir = directions.find(({ name }) => name === direction);
   if (!dir) {
     throw new Error(`Unknown direction ${direction}`);
@@ -37,7 +37,7 @@ const getDirectionByName = (direction: DirectionName) => {
   return dir;
 }
 
-const getDirectionByReference = (reference: string) => {
+export const getDirectionByReference = (reference: string) => {
   const dir = directions.find(({ reference: ref }) => ref === reference);
   if (!dir) {
     throw new Error(`Unknown direction reference ${reference}`);
@@ -82,7 +82,7 @@ export const rotateLeft = (position: Position) => {
 export interface Position {
   x: number;
   y: number;
-  direction: DirectionName;
+  direction: string;
 }
 
 export const attemptMoveForward = (previousPosition: Position) => {

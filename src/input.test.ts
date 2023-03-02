@@ -10,12 +10,31 @@ describe('convertCharacterIntoCommand', () => {
 });
 
 describe('convertIntrustructionsIntoCommands', () => {
-  describe('height & width', () => {
-    it('should return the grid height and width, from the characters of the first line', () => {
-      const fakeInstructions = `3 7`
-      const { gridHeight, gridWidth } = convertIntrustructionsIntoCommands(fakeInstructions);
-      expect(gridHeight).toBe(3);
-      expect(gridWidth).toBe(7);
-    });
+  it('should return the grid height and width, from the characters of the first line', () => {
+    const fakeInstructions = `3 7`
+    const { gridHeight, gridWidth } = convertIntrustructionsIntoCommands(fakeInstructions);
+    expect(gridHeight).toBe(3);
+    expect(gridWidth).toBe(7);
+  });
+  it('should return a list of instructions for every pair of lines after the first', () => {
+    const fakeInstructions = `3 7
+    1 2 N
+    LMLMLMLMM
+    3 3 E
+    MMRMMRMRRM`;
+    const result = convertIntrustructionsIntoCommands(fakeInstructions);
+    const { sequences } = result
+    expect(sequences.length).toBe(2);
+  });
+  it('Each sequence should contain instructions', () => {
+    const fakeInstructions = `3 7
+    1 2 N
+    LMLMLMLMM
+    3 3 E
+    MMRMMRMRRM`;
+    const result = convertIntrustructionsIntoCommands(fakeInstructions);
+    const { sequences } = result
+    expect(sequences[0].instructions.length).toBe(9);
+    expect(sequences[1].instructions.length).toBe(10);
   })
 });
