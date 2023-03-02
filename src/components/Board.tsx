@@ -1,9 +1,25 @@
-import { convertIntrustructionsIntoCommands } from '../input'
+import { useState } from 'react'
+import { convertIntrustructionsIntoCommands, Sequence } from '../input'
 import { createBoard } from '../board'
 
 interface BoardProps {
   instructions: string
 }
+
+interface Robot extends Sequence {
+  finished: boolean
+  crashed: boolean
+  display: boolean
+}
+
+const CellContent = (rowIndex: number, columnIndex: number, robots: Robot[]) => {
+  const robot = robots.find(robot => robot.position.x === columnIndex && robot.position.y === rowIndex)
+  if (robot) {
+    return `R${rowIndex} ${columnIndex}`
+  }
+  return `${rowIndex} ${columnIndex}`
+}
+
 
 const Board = ({ instructions }: BoardProps) => {
   const {
@@ -12,6 +28,19 @@ const Board = ({ instructions }: BoardProps) => {
     sequences,
   } = convertIntrustructionsIntoCommands(instructions)
   const board = createBoard(gridWidth, gridHeight)
+
+  const [robots, setRobots] = useState(sequences.map((sequence, index) => ({
+    ...sequence,
+    finished: false,
+    crashed: false,
+    display: Boolean(index === 0)
+  })))
+
+  const [currentRobotIndex, setCurrentRobotIndex] = useState(0)
+
+  const currentRobot = robots[currentRobotIndex]
+  
+
   return (
     <main
       style={{
@@ -57,7 +86,7 @@ const Board = ({ instructions }: BoardProps) => {
                   alignItems: 'center',
                 }}
               >
-                {`${rowIndex} ${cellIndex}`}
+                {CellContent(rowIndex, cellIndex, robots)}
               </div>
             ))}
           </div>
