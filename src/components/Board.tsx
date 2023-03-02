@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { convertIntrustructionsIntoCommands, Sequence } from '../input'
+import { useEffect, useState } from 'react'
+import { convertIntrustructionsIntoCommands, Sequence, } from '../input'
 import { createBoard } from '../board'
 
 interface BoardProps {
@@ -14,12 +14,12 @@ interface Robot extends Sequence {
 
 const CellContent = (rowIndex: number, columnIndex: number, robots: Robot[]) => {
   const robot = robots.find(robot => robot.position.x === columnIndex && robot.position.y === rowIndex)
-  if (robot) {
-    return `R${rowIndex} ${columnIndex}`
+  if (!robot || !robot.display) {
+    return `${rowIndex} ${columnIndex}`
   }
-  return `${rowIndex} ${columnIndex}`
+  
+  return `R ${robot.position.direction} ${rowIndex} ${columnIndex}`
 }
-
 
 const Board = ({ instructions }: BoardProps) => {
   const {
@@ -39,8 +39,44 @@ const Board = ({ instructions }: BoardProps) => {
   const [currentRobotIndex, setCurrentRobotIndex] = useState(0)
 
   const currentRobot = robots[currentRobotIndex]
-  
 
+  const tick = () => {
+    if (currentRobot.instructions.length === 0) {
+      setRobots(robots.map((robot, index) => {
+        if (index === currentRobotIndex) {
+          return {
+            ...robot,
+            finished: true,
+          }
+        }
+        return robot
+      }))
+      return;
+    }
+    const { instructions } = currentRobot
+    const [nextInstruction] = instructions
+    const updatedPosition = nextInstruction(currentRobot.position)
+    const updatedRobot = {
+      ...currentRobot,
+      position: updatedPosition,
+      instructions: instructions.slice(1),
+    }
+    setRobots(robots.map((robot, index) => {
+      if (index === currentRobotIndex) {
+        return updatedRobot
+      }
+      return robot
+    }
+    ))
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      tick()
+      console.log('called just once?')
+    }, 1000)
+  })
+  
   return (
     <main
       style={{
