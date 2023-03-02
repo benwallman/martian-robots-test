@@ -1,4 +1,4 @@
-import { rotateLeft, rotateRight, attemptMoveForward } from "./movements";
+import { rotateLeft, rotateRight, attemptMoveForward, Position } from "./movements";
 
 export const convertCharacterIntoCommand = (character: string) => {
   if (character === "L") {
@@ -14,3 +14,17 @@ export const convertCharacterIntoCommand = (character: string) => {
   }
   throw new Error(`Unknown command ${character}`);
 };
+
+interface Sequence {
+  position: Position;
+  instructions: ((position: Position) => Position)[];
+}
+
+export const convertIntrustructionsIntoCommands = (instructions: string) => {
+  return {
+    gridHeight: 0,
+    gridWidth: 0,
+    sequences: [],
+  }
+}
+
