@@ -20,10 +20,17 @@ interface Sequence {
   instructions: ((position: Position) => Position)[];
 }
 
+const splitMultilineToLines = (input: string) =>
+  input.split(/\r?\n/).filter((element) => element);
+
 export const convertIntrustructionsIntoCommands = (instructions: string) => {
+  const [firstLine, ...restOfLines] = splitMultilineToLines(instructions);
+  const firstLineAsNumbers = firstLine.split(" ").map(Number);
+  const [gridHeight, gridWidth] = firstLineAsNumbers;
+
   return {
-    gridHeight: 0,
-    gridWidth: 0,
+    gridHeight,
+    gridWidth,
     sequences: [],
   }
 }
