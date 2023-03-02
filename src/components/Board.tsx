@@ -73,7 +73,6 @@ const Board = ({ instructions }: BoardProps) => {
   useEffect(() => {
     setTimeout(() => {
       tick()
-      console.log('called just once?')
     }, 1000)
   })
   
@@ -96,7 +95,7 @@ const Board = ({ instructions }: BoardProps) => {
       <div style={{
         display: 'flex',
         flex: '0 0 100%',
-        flexDirection: 'column',
+        flexDirection: 'column-reverse',
       }}>
         {board.map((row, rowIndex) => (
           <div
