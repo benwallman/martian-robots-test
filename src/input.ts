@@ -54,4 +54,3 @@ export const convertIntrustructionsIntoCommands = (instructions: string) => {
     sequences,
   }
 }
-
