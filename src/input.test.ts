@@ -13,8 +13,8 @@ describe('convertIntrustructionsIntoCommands', () => {
   it('should return the grid height and width, from the characters of the first line', () => {
     const fakeInstructions = `3 7`
     const { gridHeight, gridWidth } = convertIntrustructionsIntoCommands(fakeInstructions);
-    expect(gridHeight).toBe(3);
-    expect(gridWidth).toBe(7);
+    expect(gridHeight).toBe(7);
+    expect(gridWidth).toBe(3);
   });
   it('should return a list of instructions for every pair of lines after the first', () => {
     const fakeInstructions = `3 7

@@ -46,7 +46,7 @@ const convertRestOfLinesIntoSequences = (restOfLines: string[]) => restOfLines.r
 export const convertIntrustructionsIntoCommands = (instructions: string) => {
   const [firstLine, ...restOfLines] = splitMultilineToLines(instructions);
   const firstLineAsNumbers = firstLine.split(" ").map(Number);
-  const [gridHeight, gridWidth] = firstLineAsNumbers;
+  const [gridWidth, gridHeight] = firstLineAsNumbers;
   const sequences = convertRestOfLinesIntoSequences(restOfLines);
   return {
     gridHeight,
