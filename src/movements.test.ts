@@ -110,4 +110,15 @@ describe('moveIsValid', () => {
     const isValid = moveIsValid(position, boardHeight, boardWidth);
     expect(isValid).toEqual(false);
   })
+  it('should not allow you to move beyond the end of the board', () => {
+    const position: Position = {
+      x: 1,
+      y: 2,
+      direction: 'East',
+    }
+    const boardHeight = 10;
+    const boardWidth = 1;
+    const isValid = moveIsValid(position, boardHeight, boardWidth);
+    expect(isValid).toEqual(false);
+  })
 })
