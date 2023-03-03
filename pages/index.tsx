@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Board from '../src/components/Board'
 
-const exampleInstructions = `3 7
-1 2 N
-LFLFLFLFF
-3 3 E
-FFRFFRFRRF
-`
+const exampleInstructions = `5 3
+1 1 E
+RFRFRFRF
+3 2 N
+FRRFLLFFRRFLL
+0 3 W
+LLFFFLFLFL`
 
 export default function Home() {
   const [instructionsUnformatted, setInstructionsUnformatted] = useState('');

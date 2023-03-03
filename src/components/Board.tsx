@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { convertIntrustructionsIntoCommands, Sequence } from '../input'
-import { getDirectionByName } from '../movements'
+import { getDirectionByName, moveIsValid, scentLeftHere } from '../movements'
 import { createBoard } from '../board'
 
 interface BoardProps {
@@ -9,6 +9,7 @@ interface BoardProps {
 
 interface Robot extends Sequence {
   display: boolean
+  lost?: boolean
 }
 
 const CellContent = (rowIndex: number, columnIndex: number, robots: Robot[]) => {
@@ -37,7 +38,7 @@ const Board = ({ instructions }: BoardProps) => {
   } = convertIntrustructionsIntoCommands(instructions)
   const board = createBoard(gridWidth, gridHeight)
 
-  const [robots, setRobots] = useState(sequences.map((sequence, index) => ({
+  const [robots, setRobots] = useState<Robot[]>(sequences.map((sequence, index) => ({
     ...sequence,
     display: Boolean(index === 0)
   })))
@@ -51,8 +52,8 @@ const Board = ({ instructions }: BoardProps) => {
   const tick = () => {
     if (currentRobotIndex === robots.length - 1 && currentRobot.instructions.length === 0) {
       // All robots have completed their instructions
-      const lastPositions = robots.map(({ position }) => `${position.y} ${position.x} ${getDirectionByName(position.direction).reference}`).join('\n')
       if (!completed) {
+        const lastPositions = robots.map(({ position, lost }) => `${position.x} ${position.y} ${getDirectionByName(position.direction).reference} ${lost ? 'Lost' : ''}`).join('\n')
         window.alert(lastPositions)
       }
       setCompleted(true)
@@ -80,6 +81,23 @@ const Board = ({ instructions }: BoardProps) => {
     const { instructions } = currentRobot
     const [nextInstruction] = instructions
     const updatedPosition = nextInstruction(currentRobot.position)
+    const isValidMove = moveIsValid(updatedPosition, gridHeight, gridWidth)
+    if (!isValidMove) {
+      const previousInvalidPositions = robots.filter(({ lost }) => lost).map(({ position }) => position)
+      const scentHere = scentLeftHere(currentRobot.position, previousInvalidPositions)
+      const updatedRobot = {
+        ...currentRobot,
+        lost: !scentHere,
+        instructions: scentHere ? instructions.slice(1) : [],
+      }
+      setRobots(currentRobots => currentRobots.map((robot, index) => {
+        if (index === currentRobotIndex) {
+          return updatedRobot
+        }
+        return robot
+      }))
+      return
+    }
     const updatedRobot = {
       ...currentRobot,
       position: updatedPosition,
