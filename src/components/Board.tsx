@@ -49,66 +49,78 @@ const Board = ({ instructions }: BoardProps) => {
 
   const [completed, setCompleted] = useState(false)
 
-  const tick = () => {
-    if (currentRobotIndex === robots.length - 1 && currentRobot.instructions.length === 0) {
-      // All robots have completed their instructions
-      if (!completed) {
-        const lastPositions = robots.map(({ position, lost }) => `${position.x} ${position.y} ${getDirectionByName(position.direction).reference} ${lost ? 'Lost' : ''}`).join('\n')
-        window.alert(lastPositions)
-      }
-      setCompleted(true)
-      return
-    }
-    if (currentRobot.instructions.length === 0) {
-      setRobots(currentRobots => currentRobots.map((robot, index) => {
-        if (index === currentRobotIndex) {
-          return {
-            ...robot,
-            display: false,
-          }
-        }
-        if (index === currentRobotIndex + 1) {
-          return {
-            ...robot,
-            display: true,
-          }
-        }
-        return robot
-      }))
-      setCurrentRobotIndex(currentRobotIndex => currentRobotIndex + 1)
-      return;
-    }
+  const makeNextMove = () => {
     const { instructions } = currentRobot
-    const [nextInstruction] = instructions
-    const updatedPosition = nextInstruction(currentRobot.position)
-    const isValidMove = moveIsValid(updatedPosition, gridHeight, gridWidth)
-    if (!isValidMove) {
-      const previousInvalidPositions = robots.filter(({ lost }) => lost).map(({ position }) => position)
-      const scentHere = scentLeftHere(currentRobot.position, previousInvalidPositions)
+      const [nextInstruction] = instructions
+      const updatedPosition = nextInstruction(currentRobot.position)
+      const isValidMove = moveIsValid(updatedPosition, gridHeight, gridWidth)
+      if (!isValidMove) {
+        const previousInvalidPositions = robots.filter(({ lost }) => lost).map(({ position }) => position)
+        const scentHere = scentLeftHere(currentRobot.position, previousInvalidPositions)
+        const updatedRobot = {
+          ...currentRobot,
+          lost: !scentHere,
+          instructions: scentHere ? instructions.slice(1) : [],
+        }
+        setRobots(currentRobots => currentRobots.map((robot, index) => {
+          if (index === currentRobotIndex) {
+            return updatedRobot
+          }
+          return robot
+        }))
+        return
+      }
       const updatedRobot = {
         ...currentRobot,
-        lost: !scentHere,
-        instructions: scentHere ? instructions.slice(1) : [],
+        position: updatedPosition,
+        instructions: instructions.slice(1),
       }
-      setRobots(currentRobots => currentRobots.map((robot, index) => {
+      setRobots(robots.map((robot, index) => {
         if (index === currentRobotIndex) {
           return updatedRobot
         }
         return robot
       }))
-      return
+  }
+
+  const completeGame = () => {
+    // All robots have completed their instructions
+    if (!completed) {
+      const lastPositions = robots.map(({ position, lost }) => `${position.x} ${position.y} ${getDirectionByName(position.direction).reference} ${lost ? 'Lost' : ''}`).join('\n')
+      window.alert(lastPositions)
     }
-    const updatedRobot = {
-      ...currentRobot,
-      position: updatedPosition,
-      instructions: instructions.slice(1),
-    }
-    setRobots(robots.map((robot, index) => {
+    setCompleted(true)
+  }
+
+  const moveToNextRobot = () => {
+    setRobots(currentRobots => currentRobots.map((robot, index) => {
       if (index === currentRobotIndex) {
-        return updatedRobot
+        return {
+          ...robot,
+          display: false,
+        }
+      }
+      if (index === currentRobotIndex + 1) {
+        return {
+          ...robot,
+          display: true,
+        }
       }
       return robot
     }))
+    setCurrentRobotIndex(currentRobotIndex => currentRobotIndex + 1)
+  }
+
+  const tick = () => {
+    if (currentRobot.instructions.length > 0) {
+      makeNextMove()
+      return
+    }
+    if (currentRobotIndex !== robots.length - 1) {
+      moveToNextRobot()
+      return
+    }
+    completeGame()
   }
 
   useEffect(() => {
