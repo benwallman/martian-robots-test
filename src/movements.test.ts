@@ -1,4 +1,4 @@
-import { attemptMoveForward, rotateLeft, rotateRight, moveIsValid, Position } from './movements';
+import { attemptMoveForward, rotateLeft, rotateRight, moveIsValid, Position, scentLeftHere } from './movements';
 
 describe('rotateLeft', () => {
   it('should rotate anticlockwise', () => {
@@ -120,5 +120,40 @@ describe('moveIsValid', () => {
     const boardWidth = 1;
     const isValid = moveIsValid(position, boardHeight, boardWidth);
     expect(isValid).toEqual(false);
+  })
+})
+
+describe('scentLeftHere', () => {
+  it('should return true if the position has already been visited', () => {
+    const position: Position = {
+      x: 1,
+      y: 2,
+      direction: 'East',
+    }
+    const previousPositions: Position[] = [
+      {
+        x: 1,
+        y: 2,
+        direction: 'East',
+      }
+    ]
+    const scentLeft = scentLeftHere(position, previousPositions);
+    expect(scentLeft).toEqual(true);
+  })
+  it('should return false if the position has not been visited', () => {
+    const position: Position = {
+      x: 1,
+      y: 2,
+      direction: 'East',
+    }
+    const previousPositions: Position[] = [
+      {
+        x: 1,
+        y: 1,
+        direction: 'East',
+      }
+    ]
+    const scentLeft = scentLeftHere(position, previousPositions);
+    expect(scentLeft).toEqual(false);
   })
 })

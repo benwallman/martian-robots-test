@@ -117,6 +117,9 @@ export const attemptMoveForward = (previousPosition: Position) => {
   }
 }
 
+export const scentLeftHere = (position: Position, previousPositions: Position[]) => previousPositions
+  .some((previousPosition) => position.x === previousPosition.x && position.y === previousPosition.y);
+
 export const moveIsValid = (position: Position, boardHeight: number, boardWidth: number) => {
   const { x, y } = position;
   return x >= 0 && x <= boardWidth - 1 && y >= 0 && y <= boardHeight - 1;
