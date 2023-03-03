@@ -7,13 +7,13 @@ export const convertCharacterIntoCommand = (character: string) => {
   if (character === "R") {
     return rotateRight;
   }
-  if (character === "M") {
+  if (character === "F") {
     return attemptMoveForward;
   }
   throw new Error(`Unknown command ${character}`);
 };
 
-interface Sequence {
+export interface Sequence {
   position: Position;
   instructions: ((position: Position) => Position)[];
 }

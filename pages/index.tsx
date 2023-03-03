@@ -3,19 +3,14 @@ import Board from '../src/components/Board'
 
 const exampleInstructions = `3 7
 1 2 N
-LMLMLMLMM
+LFLFLFLFF
 3 3 E
-MMRMMRMRRM
+FFRFFRFRRF
 `
 
 export default function Home() {
   const [instructionsUnformatted, setInstructionsUnformatted] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  return (
-    <Board
-      instructions={exampleInstructions}
-    />
-  )
   if (submitted) {
     return (
       <Board instructions={instructionsUnformatted} />

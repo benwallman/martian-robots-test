@@ -19,9 +19,9 @@ describe('convertIntrustructionsIntoCommands', () => {
   it('should return a list of instructions for every pair of lines after the first', () => {
     const fakeInstructions = `3 7
     1 2 N
-    LMLMLMLMM
+    LFLFLFLFF
     3 3 E
-    MMRMMRMRRM`;
+    FFRFFRFRRF`;
     const result = convertIntrustructionsIntoCommands(fakeInstructions);
     const { sequences } = result
     expect(sequences.length).toBe(2);
@@ -29,9 +29,9 @@ describe('convertIntrustructionsIntoCommands', () => {
   it('Each sequence should contain instructions', () => {
     const fakeInstructions = `3 7
     1 2 N
-    LMLMLMLMM
+    LFLFLFLFF
     3 3 E
-    MMRMMRMRRM`;
+    FFRFFRFRRF`;
     const result = convertIntrustructionsIntoCommands(fakeInstructions);
     const { sequences } = result
     expect(sequences[0].instructions.length).toBe(9);
