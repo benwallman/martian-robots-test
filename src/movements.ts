@@ -29,7 +29,7 @@ const directions: Direction[] = [
   },
 ];
 
-const getDirectionByName = (direction: string) => {
+export const getDirectionByName = (direction: string) => {
   const dir = directions.find(({ name }) => name === direction);
   if (!dir) {
     throw new Error(`Unknown direction ${direction}`);

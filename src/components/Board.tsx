@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { convertIntrustructionsIntoCommands, Sequence, } from '../input'
+import { convertIntrustructionsIntoCommands, Sequence } from '../input'
+import { getDirectionByName } from '../movements'
 import { createBoard } from '../board'
 
 interface BoardProps {
@@ -7,19 +8,26 @@ interface BoardProps {
 }
 
 interface Robot extends Sequence {
-  finished: boolean
-  crashed: boolean
   display: boolean
 }
 
 const CellContent = (rowIndex: number, columnIndex: number, robots: Robot[]) => {
-  const robot = robots.find(robot => robot.position.x === columnIndex && robot.position.y === rowIndex)
-  if (!robot || !robot.display) {
+  const robotIndex = robots.findIndex(robot => robot.position.x === columnIndex && robot.position.y === rowIndex)
+  const robot = robots[robotIndex]
+  if (robotIndex === -1 || !robot?.display) {
     return `${rowIndex} ${columnIndex}`
   }
-  
-  return `R ${robot.position.direction} ${rowIndex} ${columnIndex}`
+
+  return `R${robotIndex} ${robot.position.direction} ${rowIndex} ${columnIndex}`
 }
+
+const Completed = () => (
+  <div>
+    <h1>
+      Completed
+    </h1>
+  </div>
+)
 
 const Board = ({ instructions }: BoardProps) => {
   const {
@@ -31,8 +39,6 @@ const Board = ({ instructions }: BoardProps) => {
 
   const [robots, setRobots] = useState(sequences.map((sequence, index) => ({
     ...sequence,
-    finished: false,
-    crashed: false,
     display: Boolean(index === 0)
   })))
 
@@ -40,17 +46,35 @@ const Board = ({ instructions }: BoardProps) => {
 
   const currentRobot = robots[currentRobotIndex]
 
+  const [completed, setCompleted] = useState(false)
+
   const tick = () => {
+    if (currentRobotIndex === robots.length - 1 && currentRobot.instructions.length === 0) {
+      // All robots have completed their instructions
+      const lastPositions = robots.map(({ position }) => `${position.y} ${position.x} ${getDirectionByName(position.direction).reference}`).join('\n')
+      if (!completed) {
+        window.alert(lastPositions)
+      }
+      setCompleted(true)
+      return
+    }
     if (currentRobot.instructions.length === 0) {
-      setRobots(robots.map((robot, index) => {
+      setRobots(currentRobots => currentRobots.map((robot, index) => {
         if (index === currentRobotIndex) {
           return {
             ...robot,
-            finished: true,
+            display: false,
+          }
+        }
+        if (index === currentRobotIndex + 1) {
+          return {
+            ...robot,
+            display: true,
           }
         }
         return robot
       }))
+      setCurrentRobotIndex(currentRobotIndex => currentRobotIndex + 1)
       return;
     }
     const { instructions } = currentRobot
@@ -66,16 +90,22 @@ const Board = ({ instructions }: BoardProps) => {
         return updatedRobot
       }
       return robot
-    }
-    ))
+    }))
   }
 
   useEffect(() => {
-    setTimeout(() => {
+    const interval = setInterval(() => {
       tick()
-    }, 1000)
+    }, 500)
+    return () => clearInterval(interval)
   })
-  
+
+  if (completed) {
+    return (
+      <Completed />
+    )
+  }
+
   return (
     <main
       style={{
