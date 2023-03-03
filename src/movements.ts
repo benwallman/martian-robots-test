@@ -116,3 +116,8 @@ export const attemptMoveForward = (previousPosition: Position) => {
       throw new Error(`Unknown direction ${direction}`);
   }
 }
+
+export const moveIsValid = (position: Position, boardHeight: number, boardWidth: number) => {
+  const { x, y } = position;
+  return x >= 0 && x <= boardWidth && y >= 0 && y <= boardHeight;
+}

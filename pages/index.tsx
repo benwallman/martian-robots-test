@@ -11,11 +11,11 @@ MMRMMRMRRM
 export default function Home() {
   const [instructionsUnformatted, setInstructionsUnformatted] = useState('');
   const [submitted, setSubmitted] = useState(false);
-  // return (
-  //   <Board
-  //     instructions={exampleInstructions}
-  //   />
-  // )
+  return (
+    <Board
+      instructions={exampleInstructions}
+    />
+  )
   if (submitted) {
     return (
       <Board instructions={instructionsUnformatted} />

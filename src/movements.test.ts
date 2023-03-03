@@ -1,4 +1,4 @@
-import { attemptMoveForward, rotateLeft, rotateRight, Position } from './movements';
+import { attemptMoveForward, rotateLeft, rotateRight, moveIsValid, Position } from './movements';
 
 describe('rotateLeft', () => {
   it('should rotate anticlockwise', () => {
@@ -87,4 +87,27 @@ describe('attemptMoveForward', () => {
   })
 })
 
-
+describe('moveIsValid', () => {
+  it('should return true if the move is within the board', () => {
+    const position: Position = {
+      x: 2,
+      y: 2,
+      direction: 'North',
+    }
+    const boardHeight = 3;
+    const boardWidth = 4;
+    const isValid = moveIsValid(position, boardHeight, boardWidth);
+    expect(isValid).toEqual(true);
+  });
+  it('should return false if the move is outside the board', () => {
+    const position: Position = {
+      x: 2,
+      y: 2,
+      direction: 'North',
+    }
+    const boardHeight = 1;
+    const boardWidth = 4;
+    const isValid = moveIsValid(position, boardHeight, boardWidth);
+    expect(isValid).toEqual(false);
+  })
+})
