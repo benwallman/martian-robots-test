@@ -12,23 +12,47 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Testing
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+npm run test
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+# Overview
 
-## Learn More
+This project is an attempt at the Martian Robots test.
 
-To learn more about Next.js, take a look at the following resources:
+Most of the logic consists of smallish units in the `src/` directory, each of which should be unit tested.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The display, and the binding together of these bits of logic happens entirely in the Board, using React's internal state and utilising the video game concept of a `tick` (see below).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Ticks
 
-## Deploy on Vercel
+Ticks in video games, particularly strategy games, are useful for seeing each step that a simulation is making.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+In this example, each move / rotation / decision counts as a tick. Mars is a large place, so to simulate the time taken between reaching co-ordinates the setInterval triggers a tick every 0.5 seconds.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Next steps
+
+Putting in more time, there's a few things I would do:
+
+### Refactor the board
+
+A lot of the boards functions are impure, brittle and repetitive. It would be great to make these more succint.
+
+### E2E testing
+
+Cypress (or similar) entering the whole sequence of commands and checking for the eventual output would be a fantastic way to test this simulation. This might involve being able to configure the interval, as no-one wants to arbitrarily wait for a simulation to complete during CI/CD.
+
+### Animation
+
+The whole concept of a tick was to allow the board to be visualised, and eventually animated. Currently the rover is represented as co-ordinates & direction as a string, but it should be fairly trival to change into an arrow that goes around.
+
+## Design decisions
+
+### Logic / library
+
+Originally I intended on creating a library of functions which could be fully and easily composed into the board, and represent all the movements. I changed my mind due to not wanting to spend too long on this, and wanting to use React for managing state.
+
+Had I continued with the library approach, I may have used a redux-esque way of creating an array of objects, each of which contains the boards state at that moment in time. This was somewhat translated into the concept of ticks (see above).
