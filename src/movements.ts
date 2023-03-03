@@ -119,5 +119,5 @@ export const attemptMoveForward = (previousPosition: Position) => {
 
 export const moveIsValid = (position: Position, boardHeight: number, boardWidth: number) => {
   const { x, y } = position;
-  return x >= 0 && x <= boardWidth && y >= 0 && y <= boardHeight;
+  return x >= 0 && x <= boardWidth - 1 && y >= 0 && y <= boardHeight - 1;
 }
